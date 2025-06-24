@@ -1,5 +1,4 @@
 class GameObject {
-
   int lives;
   float size;
   PVector loc;
@@ -10,8 +9,8 @@ class GameObject {
     lives = 1;
   }
 
-  public GameObject(float x, float y, float z, float s) {
-    lives = 1;
+  public GameObject(float x, float y, float z, float s, int l) {
+    lives = l;
     loc = new PVector(x, y, z);
     size = s;
   }
@@ -20,11 +19,5 @@ class GameObject {
   }
 
   void show() {
-    world.pushMatrix();
-    world.translate(loc.x, loc.y, loc.z);
-    world.fill(white);
-    world.stroke(100);
-    world.box(size);
-    world.popMatrix();
   }
 }

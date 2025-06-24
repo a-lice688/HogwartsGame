@@ -1,40 +1,24 @@
 class SpellBook extends GameObject {
-  String spellName1, spellEffect1;
-  String spellName2, spellEffect2;
 
   boolean opened = false;
   boolean learned = false;
-  // boolean cancelled = false;
 
   int selected = 0;
 
-  SpellBook(float x, float y, float z, int index) {
-    super(x, y, z, 80);
-    spellName1 = spellNames[index];
-    spellEffect1 = spellEffects[index];
-    spellName2 = spellNames[index + 1];
-    spellEffect2 = spellEffects[index + 1];
+  Spell spell1, spell2;
+
+  SpellBook(float x, float y, float z, Spell spell1, Spell spell2, int lives) {
+    super(x, y, z, 80, lives);
+    this.spell1 = spell1;
+    this.spell2 = spell2;
   }
 
   void act() {
   }
-  //      if (ckey) {
-  //        opened = false;
-  //        showPrompt = false;
-  //        HUDLine1 = "";
-  //        HUDLine2 = "";
-  //        HUDLine3 = "";
-  //      }
 
   void show() {
+    if (outside) return;
     drawModels(loc.x, loc.y, loc.z, 1.3, 1.3, 1.3, book, PI, HALF_PI, 0);
-
-    // if (cancelled && distance > 250) {
-    //   cancelled = false;
-    //   return;
-    // }
-
-    // if (distance < 250 && !cancelled) {
   }
 
   public float distToPlayer() {
@@ -42,18 +26,19 @@ class SpellBook extends GameObject {
   }
 
   public String getName1() {
-    return spellName1;
+    return spell1.getName();
   }
+
   public String getEffect1() {
-    return spellEffect1;
+    return spell1.getEffect();
   }
 
   public String getName2() {
-    return spellName2;
+    return spell2.getName();
   }
 
   public String getEffect2() {
-    return spellEffect2;
+    return spell2.getEffect();
   }
 
   public boolean getOpened() {
@@ -68,6 +53,10 @@ class SpellBook extends GameObject {
     return selected;
   }
 
+  public int getLives() {
+    return lives;
+  }
+
   public void setOpened(boolean o) {
     this.opened = o;
   }
@@ -78,8 +67,11 @@ class SpellBook extends GameObject {
 
   public void setSelected(int s) {
     this.selected = s;
-  
-}
+  }
+
+  public void setLives(int l) {
+    this.lives = l;
+  }
 }
 
 
@@ -90,9 +82,9 @@ void generateBooks() {
   float[] yPos = { height - 48, height - 50, height - 115 };
   float[] zPos = { 212, 670, -755 };
 
-  SpellBook b1 = new SpellBook(xPos[0], yPos[0], zPos[0], 0); // Sectumsempra + Confringo
-  SpellBook b2 = new SpellBook(xPos[1], yPos[1], zPos[1], 2); // Avada Kedavra + Imperio
-  SpellBook b3 = new SpellBook(xPos[2], yPos[2], zPos[2], 4); // Glacius + Reducto
+  SpellBook b1 = new SpellBook(xPos[0], yPos[0], zPos[0], new Spell_Sectumsempra(), new Spell_Confringo(), 1);
+  SpellBook b2 = new SpellBook(xPos[1], yPos[1], zPos[1], new Spell_AvadaKedavra(), new Spell_Imperio(), 1);
+  SpellBook b3 = new SpellBook(xPos[2], yPos[2], zPos[2], new Spell_Glacius(), new Spell_Reducto(), 1);
 
   activeBooks.add(b1);
   activeBooks.add(b2);

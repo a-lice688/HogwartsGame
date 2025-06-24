@@ -1,91 +1,136 @@
-class Spell extends GameObject {
-  PVector dir;
-  float speed;
+static class Spell {
+  String name;
+  String effect;
 
-  boolean sectumsempra = false;
-  int sectumsempraTimer = 30;
-  PVector leftHalf, rightHalf;
 
-  boolean glacius = false;
-  int glaciusTimer = 0;
-
-  Spell() {
-    super(0, 0, 0, 0);
+  Spell(String name, String effect) {
+    this.name = name;
+    this.effect = effect;
   }
 
-  Spell(float x, float y, float z, float speed, PVector direction) {
-    super(x, y, z, 10);
-    this.speed = speed;
-    dir = direction.copy();
-    dir.setMag(speed);
+  String getName() {
+    return name;
   }
 
+  String getEffect() {
+    return effect;
+  }
 
-  void act() {
-    if (lives <= 0 && sectumsempra == false) {
-      sectumsempra = true;
-      leftHalf = new PVector(-3, 0, 0);
-      rightHalf = new PVector(3, 0, 0);
+  ActiveSpell createInstance() {
+    return null;
+  }
+}
+class Glacius extends ActiveSpell {
+  Glacius(PVector origin, PVector direction, boolean fromPlayer) {
+    super(origin, direction, fromPlayer, 173, 216, 230); //whiteish blue
+  }
+}
+
+class Imperio extends ActiveSpell {
+  Imperio(PVector origin, PVector direction, boolean fromPlayer) {
+    super(origin, direction, fromPlayer, 255, 255, 255); //white
+  }
+}
+
+class Reducto extends ActiveSpell {
+  Reducto(PVector origin, PVector direction, boolean fromPlayer) {
+    super(origin, direction, fromPlayer, 220, 20, 60); //crimson
+  }
+}
+
+class Sectumsempra extends ActiveSpell {
+  Sectumsempra(PVector origin, PVector direction, boolean fromPlayer) {
+    super(origin, direction, fromPlayer, 0, 0, 139); //dark blue
+  }
+}
+
+class AvadaKedavra extends ActiveSpell {
+  AvadaKedavra(PVector origin, PVector direction, boolean fromPlayer) {
+    super(origin, direction, fromPlayer, 0, 100, 0); //dark green
+  }
+}
+
+class Confringo extends ActiveSpell {
+  int explosionRadius = 150;
+
+  Confringo(PVector origin, PVector direction, boolean fromPlayer) {
+    super(origin, direction, fromPlayer, 255, 165, 0); //orange
+  }
+
+  void explode() {
+    lives = 0;
+    for (int i = 0; i < 10; i++) {
+      objects.add(new Particle(loc.copy()));
     }
 
-    if (sectumsempra) {
-      sectumsempraTimer--;
-      leftHalf.x -= 0.5;
-      rightHalf.x += 0.5;
-      return;
-    }
-
-    if (glacius) {
-      glaciusTimer--;
-      if (glaciusTimer <= 0) {
-        glacius = false;
+    for (GameObject obj : objects) {
+      if (obj instanceof Enemy) {
+        if (PVector.dist(loc, obj.loc) < explosionRadius) {
+          ((Enemy)obj).hitTimer = 10;
+          ((Enemy)obj).lives--;
+        }
       }
-      return;
     }
-  }
-
-  void show() {
-    if (lives <= 0 && sectumsempra == false) return;
-
-    world.pushMatrix();
-    world.translate(loc.x, loc.y, loc.z);
-
-    if (sectumsempra) {
-      world.fill(255, 0, 255);
-      world.stroke(100);
-
-      // Left half
-      world.pushMatrix();
-      world.translate(leftHalf.x, leftHalf.y, leftHalf.z);
-      world.box(size / 2, size, size);
-      world.popMatrix();
-
-      // Right half
-      world.pushMatrix();
-      world.translate(rightHalf.x, rightHalf.y, rightHalf.z);
-      world.box(size / 2, size, size);
-      world.popMatrix();
-    } else {
-      if (glacius) {
-        world.fill(100, 200, 255);
-      } else {
-        world.fill(150, 0, 0);
-      }
-      world.stroke(50);
-      world.box(size);
-    }
-
-    world.popMatrix();
   }
 }
 
 
-//int getIndex() {
-//  while (true) {
-//    int index = int(random(spells.size()));
-//    if (!used[index]) {
-//      used[index] = true;
-//      return index;
-//    }
-//  }
-//}
+class Spell_AvadaKedavra extends Spell {
+  Spell_AvadaKedavra() {
+    super("Avada Kedavra", "Instantly destroys target");
+  }
+
+  ActiveSpell createInstance() {
+    return new AvadaKedavra(player.eye.copy(), player.getLookDirection(), true);
+  }
+}
+
+class Spell_Imperio extends Spell {
+  Spell_Imperio() {
+    super("Imperio", "Control an enemy temporarily");
+  }
+
+  ActiveSpell createInstance() {
+    return new Imperio(player.eye.copy(), player.getLookDirection(), true);
+  }
+}
+
+class Spell_Sectumsempra extends Spell {
+  Spell_Sectumsempra() {
+    super("Sectumsempra", "Slice enemy in half");
+  }
+
+  ActiveSpell createInstance() {
+    return new Sectumsempra(player.eye.copy(), player.getLookDirection(), true);
+  }
+}
+
+class Spell_Confringo extends Spell {
+  Spell_Confringo() {
+    super("Confringo", "Big explosion");
+  }
+
+  ActiveSpell createInstance() {
+    return new Confringo(player.eye.copy(), player.getLookDirection(), true);
+  }
+}
+
+class Spell_Glacius extends Spell {
+  Spell_Glacius() {
+    super("Glacius", "Freeze enemy in place");
+  }
+
+  ActiveSpell createInstance() {
+    return new Glacius(player.eye.copy(), player.getLookDirection(), true);
+  }
+}
+
+class Spell_Reducto extends Spell {
+  Spell_Reducto() {
+    super("Reducto", "Break walls or objects");
+  }
+
+  ActiveSpell createInstance() {
+    return new Reducto(player.eye.copy(), player.getLookDirection(), true);
+  }
+}

@@ -14,9 +14,11 @@ void keyPressed() {
 
   if (keyCode == RIGHT) rightkey = true;
   if (keyCode == LEFT) leftkey = true;
+  if (key == ' ') spacekey = true;
 
   if (key == '1') key1 = true;
   if (key == '2') key2 = true;
+  if (key == '3') key3 = true;
 }
 
 
@@ -31,6 +33,10 @@ void keyReleased() {
   if (key == 'R' || key == 'r') ekey = false;
 
   if (key == 'P' || key == 'p') pkey = false;
+  if (key == 'L' || key == 'l') lkey = false;
+  
+  if (key == ' ') spacekey = false;
+
   //if (key == 'C' || key == 'c') ckey = false;
   //if (keyCode == RIGHT) rightkey = false;
   //if (keyCode == LEFT) leftkey = false;

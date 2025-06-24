@@ -4,8 +4,4 @@ class CollisionChecker extends GameObject {
     loc = new PVector(x, y, z);
     this.size = size;
   }
-
-  @Override
-    void show() {
-  }
 }
