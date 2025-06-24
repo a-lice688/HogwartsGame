@@ -1,21 +1,19 @@
 class ActiveSpell extends GameObject {
-  PVector pos, vel;
+  PVector vel;
   boolean fromPlayer;
   int lives = 180;
   int glowColour;
-
   int lightTimer = 180;
 
   ActiveSpell(PVector start, PVector dir, boolean fromPlayer, int glowColour1, int glowColour2, int glowColour3) {
     super(start.x, start.y, start.z, 10, 1);
-    this.pos = start.copy();
     this.vel = dir.copy().mult(20);
     this.fromPlayer = fromPlayer;
     this.glowColour = color(glowColour1, glowColour2, glowColour3);
   }
 
   void update() {
-    pos.add(vel);
+    loc.add(vel);
     lives--;
     lightTimer--;
   }
@@ -33,7 +31,7 @@ class ActiveSpell extends GameObject {
       world.pointLight(
         red(glowColour), green(glowColour), blue(glowColour),
         loc.x, loc.y, loc.z
-        );
+      );
     }
   }
 

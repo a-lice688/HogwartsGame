@@ -20,7 +20,7 @@ class Enemy extends GameObject {
   float rotationY = 0;
 
   int hp = 100;
-
+  float displayHP = 100;
 
   Enemy(float x, float y, float z) {
     super(x, y, z, 80, 3);
@@ -32,11 +32,19 @@ class Enemy extends GameObject {
 
 
   void act() {
+
+    checkForCollisions();
+
     wasHit = hitTimer > 0;
-    wasFrozen = frozen;
+
+    displayHP = lerp(displayHP, hp, 0.1);
 
     if (hitTimer > 0) hitTimer--;
-    frozenTimer--;
+
+    if (frozen) {
+      frozenTimer--;
+      if (frozenTimer <= 0) frozen = false;
+    }
     if (frozen) return;
 
     if (!challengeAccepted) return;
@@ -107,12 +115,15 @@ class Enemy extends GameObject {
   }
 
   void checkForCollisions() {
+
+    hp = int(map(lives, 3, 0, 100, 0));
+
     for (int i = objects.size() - 1; i >= 0; i--) {
       GameObject obj = objects.get(i);
 
       if (obj instanceof ActiveSpell) {
         ActiveSpell s = (ActiveSpell) obj;
-        if (s.fromPlayer && dist(loc.x, loc.y, obj.loc.x, obj.loc.y) < 50) {
+        if (s.fromPlayer && dist(loc.x, loc.y, loc.z, obj.loc.x, obj.loc.y, obj.loc.z) < 50) {
           if (lives > 1) {
             if (obj instanceof Glacius) {
               frozen = true;
@@ -134,12 +145,9 @@ class Enemy extends GameObject {
             hitTimer = 10;
             lives--;
           }
-        } else {
-          hitTimer = 10;
-          lives = 0;
         }
       } else if (obj instanceof Player) {
-        if (dist(loc.x, loc.y, obj.loc.x, obj.loc.y) < 50) {
+        if (dist(loc.x, loc.y, loc.z, obj.loc.x, obj.loc.y, obj.loc.z) < 150) {
           hitTimer = 10;
           player.lives--;
         }

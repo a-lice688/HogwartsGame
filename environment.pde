@@ -60,17 +60,10 @@ void drawObjects() {
     drawModels(2300, height, -2000, 5.5, 3, 1, fence, PI, HALF_PI, 0);
     drawModels(2300, height, -4250, 5.5, 3, 1, fence, PI, HALF_PI, 0);
 
-    for (int i = 1000; i >= -5450; i -= 250) {
-      objects.add(new CollisionChecker(2300, height - 50, i, gridSize * 5));
-    }
-
     //back
     drawModels(1250, height, -5520, 5.5, 3, 1, fence, PI, 0, 0);
     drawModels(-1250, height, -5520, 5.5, 3, 1, fence, PI, 0, 0);
 
-    for (int i = -2500; i <= 2500; i += 250) {
-      objects.add(new CollisionChecker(i, height - 50, -5600, gridSize * 5));
-    }
 
     //tree
     drawModels(800, height, -2100, 5, 5, 5, deadtree, PI, 0, 0); //front left
@@ -96,6 +89,22 @@ void drawObjects() {
   world.fill(18);
   drawModels(0, height + 10, -920, 0.4, 0.8, 0.4, door, PI, 0, 0);
   world.popMatrix();
+}
+
+void generateCollisionCheckers() {
+  for (int i = 1000; i >= -5450; i -= 250) {
+    objects.add(new CollisionChecker(2300, height - 50, i, gridSize * 5));
+  }
+
+  for (int i = -2500; i <= 2500; i += 250) {
+    objects.add(new CollisionChecker(i, height - 50, -5600, gridSize * 5));
+  }
+
+  // trees
+  objects.add(new CollisionChecker(800, height - 50, -2100, gridSize * 2));
+  objects.add(new CollisionChecker(-1150, height - 50, -2700, gridSize * 2));
+  objects.add(new CollisionChecker(1150, height - 50, -3900, gridSize * 2));
+  objects.add(new CollisionChecker(-800, height - 50, -4400, gridSize * 2));
 }
 
 void drawModels(float tx, float ty, float tz, float sx, float sy, float sz, PShape shape, float rotateX, float rotateY, float rotateZ) {

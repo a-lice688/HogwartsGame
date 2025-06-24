@@ -15,10 +15,20 @@ class Player extends GameObject {
   ArrayList<ActiveSpell> activeSpells = new ArrayList<ActiveSpell>();
 
   float distToBook;
-  
+
+  int lives = 3;
   int hp = 100;
+  float displayHP = 100;
 
   String learnedName;
+
+  boolean frozen = false;
+  int frozenTimer = 0;
+
+  int hitTimer = 0;
+
+  boolean controlled = false;
+  int controlTimer = 0;
 
   Player() {
     up = new PVector(0, 1, 0);
@@ -36,12 +46,24 @@ class Player extends GameObject {
   void update() {
     move();
     updateLook();
+    checkForCollisions();
+    displayHP = lerp(displayHP, hp, 0.1);
   }
 
   void act() {
     handleSpellBook();
     handleGuards();
     checkMapTransition();
+
+    if (frozen) {
+      frozenTimer--;
+      if (frozenTimer <= 0) frozen = false;
+    }
+
+    if (controlled) {
+      controlTimer--;
+      if (controlTimer <= 0) controlled = false;
+    }
   }
   void move() {
 
@@ -351,6 +373,36 @@ class Player extends GameObject {
       if (instance != null) {
         activeSpells.add(instance);
         objects.add(instance);
+      }
+    }
+  }
+
+  void checkForCollisions() {
+
+    hp = int(map(lives, 3, 0, 100, 0));
+
+    for (int i = objects.size() - 1; i >= 0; i--) {
+      GameObject obj = objects.get(i);
+
+      if (obj instanceof ActiveSpell) {
+        ActiveSpell s = (ActiveSpell) obj;
+        if (!s.fromPlayer && dist(loc.x, loc.y, obj.loc.x, obj.loc.y) < 100) {
+          if (lives > 1) {
+            if (obj instanceof Glacius) {
+              frozen = true;
+              frozenTimer = 10;
+              lives--;
+            } else if (obj instanceof AvadaKedavra) {
+              lives = 0;
+            } else if (obj instanceof Imperio) {
+              controlled = true;
+              controlTimer = 120;
+              lives--;
+            } else {
+              lives--;
+            }
+          }
+        }
       }
     }
   }

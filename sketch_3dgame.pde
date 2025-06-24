@@ -132,8 +132,9 @@ void setup() {
 
 
   if (!outside) generateBooks();
-
+  
   generateEnemies();
+  generateCollisionCheckers();
 
   //gifs
   //Slytherin = new Gif("zSlytherin-", ".tiff", 12, 10, 0, 0, 180, 270);
@@ -240,23 +241,16 @@ void draw() {
   //}
 
   boolean flashRed = false;
-  boolean flashBlue = false;
 
   for (GameObject obj : objects) {
     if (obj instanceof Enemy) {
       Enemy e = (Enemy) obj;
       if (e.wasHit) flashRed = true;
-      if (e.wasFrozen) flashBlue = true;
     }
   }
 
   if (flashRed) {
     HUD.fill(255, 0, 0, 100);
-    HUD.noStroke();
-    HUD.rect(0, 0, width, height);
-  }
-  if (flashBlue) {
-    HUD.fill(100, 200, 255, 100);
     HUD.noStroke();
     HUD.rect(0, 0, width, height);
   }
@@ -308,22 +302,22 @@ class HUD {
       graphics.fill(255);
       graphics.text("Player HP", 20, height - 180);
       graphics.fill(255, 0, 0);
-      graphics.rect(20, height - 160, map(player.hp, 0, 100, 0, 200), 20);
+      graphics.rect(20, height - 160, map(player.displayHP, 0, 100, 0, 200), 20);
       graphics.noFill();
       graphics.stroke(255);
       graphics.rect(20, height - 160, 200, 20);
 
+
       //enemy hp bar
       for (Enemy e : enemies) {
-        
-          graphics.fill(255);
-          graphics.text("Enemy HP", width - 220, height - 180);
-          graphics.fill(0, 100, 255);
-          graphics.rect(width - 220, height - 160, map(e.hp, 0, 100, 0, 200), 20);
-          graphics.noFill();
-          graphics.stroke(255);
-          graphics.rect(width - 220, height - 160, 200, 20);
-        
+
+        graphics.fill(255);
+        graphics.text("Enemy HP", width - 220, height - 180);
+        graphics.fill(0, 100, 255);
+        graphics.rect(width - 220, height - 160, map(e.displayHP, 0, 100, 0, 200), 20);
+        graphics.noFill();
+        graphics.stroke(255);
+        graphics.rect(width - 220, height - 160, 200, 20);
       }
     }
   }

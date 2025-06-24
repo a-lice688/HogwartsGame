@@ -51,7 +51,6 @@ class AvadaKedavra extends ActiveSpell {
 }
 
 class Confringo extends ActiveSpell {
-  int explosionRadius = 150;
 
   Confringo(PVector origin, PVector direction, boolean fromPlayer) {
     super(origin, direction, fromPlayer, 255, 165, 0); //orange
@@ -61,15 +60,6 @@ class Confringo extends ActiveSpell {
     lives = 0;
     for (int i = 0; i < 10; i++) {
       objects.add(new Particle(loc.copy()));
-    }
-
-    for (GameObject obj : objects) {
-      if (obj instanceof Enemy) {
-        if (PVector.dist(loc, obj.loc) < explosionRadius) {
-          ((Enemy)obj).hitTimer = 10;
-          ((Enemy)obj).lives--;
-        }
-      }
     }
   }
 }
